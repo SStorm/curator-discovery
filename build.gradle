@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "com.alertme.curator.producer.daemon.Application"
 
 sourceCompatibility = 1.7
 version = '0.1'
@@ -16,6 +19,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter:1.2.1.RELEASE"
     compile "org.apache.curator:curator-framework:2.7.1"
     compile "org.apache.curator:curator-x-discovery:2.7.1"
+    testCompile "org.springframework.boot:spring-boot-starter-test:1.2.1.RELEASE"
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 }

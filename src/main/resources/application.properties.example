@@ -1,0 +1,4 @@
+
+zookeeper=localhost:2181
+serviceType=myService
+servicePort=5672
