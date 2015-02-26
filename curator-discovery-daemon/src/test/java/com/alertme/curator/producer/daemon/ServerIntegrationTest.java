@@ -3,8 +3,8 @@
  */
 package com.alertme.curator.producer.daemon;
 
+import com.alertme.curator.discovery.client.ServiceDefinition;
 import com.alertme.curator.producer.daemon.server.Server;
-import com.alertme.curator.producer.daemon.server.ServiceDefinition;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -22,8 +22,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -44,7 +42,7 @@ public class ServerIntegrationTest {
 
     private CuratorFramework client;
 
-    private ServiceDiscovery<Map> discovery;
+    private ServiceDiscovery<ServiceDefinition> discovery;
 
     @Before
     public void setup() throws Exception {
@@ -52,10 +50,10 @@ public class ServerIntegrationTest {
                         new ExponentialBackoffRetry(1000, 3));
         client.start();
 
-        JsonInstanceSerializer<Map> serializer =
-                new JsonInstanceSerializer<Map>(Map.class);
+        JsonInstanceSerializer<ServiceDefinition> serializer =
+                new JsonInstanceSerializer<ServiceDefinition>(ServiceDefinition.class);
 
-        discovery = ServiceDiscoveryBuilder.builder(Map.class)
+        discovery = ServiceDiscoveryBuilder.builder(ServiceDefinition.class)
                 .client(client)
                 .serializer(serializer)
                 .basePath(Server.SERVICE_PATH).build();
@@ -75,12 +73,12 @@ public class ServerIntegrationTest {
         Thread.sleep(1000);
 
         // when
-        Collection<ServiceInstance<Map>> services
+        Collection<ServiceInstance<ServiceDefinition>> services
                 = discovery.queryForInstances(serviceType);
 
         // then
         assertThat(services, hasSize(1));
-        ServiceInstance<Map> instance = services.iterator().next();
-        assertThat((String)instance.getPayload().get("serviceType"), equalTo(serviceType));
+        ServiceInstance<ServiceDefinition> instance = services.iterator().next();
+        assertThat((String)instance.getPayload().getType(), equalTo(serviceType));
     }
 }

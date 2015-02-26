@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2014 AlertMe.com Ltd
  */
-package com.alertme.curator.producer.daemon.server;
+package com.alertme.curator.discovery.client;
 
 public class ServiceDefinition {
 
