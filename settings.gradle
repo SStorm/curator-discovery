@@ -1,2 +1,5 @@
-rootProject.name = 'curator-producer-daemon'
+rootProject.name = 'curator-discovery'
+
+include 'curator-discovery-daemon'
+include 'curator-discovery-client'
 

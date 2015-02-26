@@ -22,6 +22,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -42,7 +44,7 @@ public class ServerIntegrationTest {
 
     private CuratorFramework client;
 
-    private ServiceDiscovery<ServiceDefinition> discovery;
+    private ServiceDiscovery<Map> discovery;
 
     @Before
     public void setup() throws Exception {
@@ -50,10 +52,10 @@ public class ServerIntegrationTest {
                         new ExponentialBackoffRetry(1000, 3));
         client.start();
 
-        JsonInstanceSerializer<ServiceDefinition> serializer =
-                new JsonInstanceSerializer<ServiceDefinition>(ServiceDefinition.class);
+        JsonInstanceSerializer<Map> serializer =
+                new JsonInstanceSerializer<Map>(Map.class);
 
-        discovery = ServiceDiscoveryBuilder.builder(ServiceDefinition.class)
+        discovery = ServiceDiscoveryBuilder.builder(Map.class)
                 .client(client)
                 .serializer(serializer)
                 .basePath(Server.SERVICE_PATH).build();
@@ -66,19 +68,19 @@ public class ServerIntegrationTest {
         IOUtils.closeStream(discovery);
     }
 
-    @Test
+    @Test(timeout = 2000L)
     public void serviceWillBeAvailableForDiscovery() throws Exception {
         // given
         // Server starts asynchronously. I'd love to have assertEventually here
         Thread.sleep(1000);
 
         // when
-        Collection<ServiceInstance<ServiceDefinition>> services
+        Collection<ServiceInstance<Map>> services
                 = discovery.queryForInstances(serviceType);
 
         // then
         assertThat(services, hasSize(1));
-        ServiceInstance<ServiceDefinition> instance = services.iterator().next();
-        assertThat(instance.getPayload().getType(), equalTo(serviceType));
+        ServiceInstance<Map> instance = services.iterator().next();
+        assertThat((String)instance.getPayload().get("serviceType"), equalTo(serviceType));
     }
 }
