@@ -1,9 +1,9 @@
-version = '0.0.1'
-group = 'com.alertme.curator'
 
 configure(subprojects) { project ->
     apply plugin: 'java'
+    apply plugin: 'maven'
     group = "com.alertme.curator"
+    version = "0.0.1"
     sourceCompatibility = 1.7
 
     repositories {
