@@ -81,6 +81,7 @@ public class ServerIntegrationTest {
         IOUtils.closeStream(client);
         IOUtils.closeStream(discovery);
         discoveryClient.stop();
+        discoveryClient2.stop();
     }
 
     @Test(timeout = 5000L)
@@ -121,5 +122,20 @@ public class ServerIntegrationTest {
         // then
         assertThat(lockedInstance, not(nullValue()));
         assertThat(lockedInstance2, nullValue());
+    }
+
+    @Test(timeout = 5000L)
+    public void whenAClientRelinquishesALockAnotherOneCanLockInstance() {
+        // given
+        discoveryClient.start();
+        discoveryClient2.start();
+
+        // when
+        discoveryClient.acquireInstance(serviceType);
+        discoveryClient.stop();
+        ServiceInstance<ServiceDefinition> lockedInstance2 = discoveryClient2.acquireInstance(serviceType);
+
+        // then
+        assertThat(lockedInstance2, not(nullValue()));
     }
 }
