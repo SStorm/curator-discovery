@@ -5,6 +5,8 @@ package com.alertme.curator.discovery.client;
 
 public class ServiceDefinition {
 
+    public static String DISCOVERY_BASE_PATH = "/discovery/services";
+
     private String type;
     private int port;
 

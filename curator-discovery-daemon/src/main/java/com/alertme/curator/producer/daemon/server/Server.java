@@ -63,7 +63,7 @@ public class Server implements InitializingBean, Runnable {
                     .client(client)
                     .serializer(serializer)
                     .thisInstance(thisInstance)
-                    .basePath(SERVICE_PATH).build();
+                    .basePath(ServiceDefinition.DISCOVERY_BASE_PATH).build();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new IllegalStateException(e);
